@@ -7,8 +7,8 @@ from csv_data import columns_dict
 def show_column(i):
         print(columns_dict[i])
             
-def filter(value):
-    with open('cars_dataset.csv','r', newline='') as  file:
+def filter_def(value):
+    with open('cars_dataset.csv','r', newline='') as  file:    #переделать функцию чтобы убрать отркытие файла
         reader = csv.reader(file)
         k=0
         for row in reader:
@@ -18,3 +18,27 @@ def filter(value):
                print(row)
         if k ==0:
             print('По заданному фильтру ничего не нашлось')
+            
+def filter_price(s):
+    
+    indexes = []
+    
+    if s[0] == '<':
+        if s[1] == '=':
+            
+            value = int(s[2:])
+            
+            for r in columns_dict['price_rub']:
+                if int(r) <= value:
+                    i = columns_dict['price_rub'].index(r)
+                    print([columns_dict[k][i] for k in columns_dict])
+            
+        else:
+            
+            value = int(s[1:])
+            
+            for r in columns_dict['price_rub']:
+                if int(r) < value:
+                    i = columns_dict['price_rub'].index(r)
+                    print([columns_dict[k][i] for k in columns_dict])  # повторить для остальных операторов
+          
