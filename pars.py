@@ -1,6 +1,6 @@
 import argparse
 
-from csv_read import show_column, filter_num_args, filter_str_args, stats_c,grouping
+from csv_functions import show_column, filter_num_args, filter_str_args, stats_c,grouping
 
 from csv_data import columns_dict
 
@@ -87,20 +87,13 @@ elif args.command == 'stats':
 elif args.command == 'grouping':
     if args.simple_group:
         s = grouping(args.simple_group)
+        k = list(s.keys())
         if args.combined_w_stat:
-            s_keys = list(s.keys())
-            indexes = []
-            for j in range(len(s_keys)):
-                in_j = []
-                for i,r in enumerate(columns_dict[args.simple_group]):
-
-                    if s_keys[j] == r:
-                        in_j.append(i)
-                indexes.append(in_j)
-                        
-            for i in indexes:
-                s_for_stat = [columns_dict[args.combined_w_stat][j] for j in i]
-                print(s_keys[indexes.index(i)])
+            for i in k:
+                indexes = s[i]
+                s_for_stat = [columns_dict[args.combined_w_stat][j] for j in indexes]
+                print(i)
                 stats_c(s_for_stat)
-        
-        else: print(s)
+        else:
+            for i in k:
+                print(i,len(s[i]))
