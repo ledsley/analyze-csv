@@ -1,6 +1,6 @@
 from csv_data import columns_dict
 import operator
-from collections import Counter
+from collections import defaultdict
 
 def show_column(i):
         print(columns_dict[i])
@@ -54,6 +54,20 @@ def stats_c(s):
     print(f'срденее значение:{round(sum(s)/n,1)}')
     
 def grouping(column_name):
-    s = dict(Counter(columns_dict[column_name]))
-    return s
-#группировка + статитсика ключ из словаря это значение из списка по которому мне нужно пройтись и взять индексы и посчитать по этому индексу
+    s = list(set(columns_dict[column_name]))
+    indexes = []
+    for j in range(len(s)):
+        in_j = []
+        for i,r in enumerate(columns_dict[column_name]):
+            if s[j] == r:
+                in_j.append(i)
+        indexes.append(in_j)
+    return s,indexes
+
+def grouping(column_name):
+   s =defaultdict(list)
+   for i,r in enumerate(columns_dict[column_name]):
+       s[r].append(i)
+       
+   s = dict(s)
+   return s
