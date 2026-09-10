@@ -1,5 +1,7 @@
 import argparse
 
+import sys
+
 from csv_functions import show_column, filter_num_args, filter_str_args, stats_c,grouping
 
 from csv_data import columns_dict
@@ -27,9 +29,11 @@ sub_group = subparsers.add_parser('grouping', help= ' Введите назва�
 sub_group.add_argument('--simple_group', choices=('brand','model','fuel','transmission','city'))
 sub_group.add_argument('--combined_w_stat',choices=('year','mileage_km','engine_l','price_rub'), help='Введите название колонки, по которой вы хотите посмотреть статистику')
 
-parser.print_help()
-
 args = parser.parse_args()
+
+if len(sys.argv) == 1:
+    parser.print_help()
+    sys.exit(1)
 
 if args.column:
     if args.column in columns_dict:
@@ -60,7 +64,7 @@ if args.command == 'f':
         final_indexes.append(filter_num_args(args.year,'year',int))
         
     if args.mileage:
-        final_indexes.append(filter_num_args(args.mileage,'mileage',int))
+        final_indexes.append(filter_num_args(args.mileage,'mileage_km',int))
         
     if args.engine_l:
         final_indexes.append(filter_num_args(args.engine_l,'engine_l',float))
@@ -68,21 +72,24 @@ if args.command == 'f':
     if args.transmission:
         final_indexes.append(filter_str_args(args.transmission,'transmission'))
         
-    intersection_indexes =final_indexes[0]
+    if len(final_indexes) != 0 :
+        intersection_indexes =final_indexes[0]
 
-    n = len(final_indexes)
+        n = len(final_indexes)
 
-    if n>1:
-        for i in range(1,len(final_indexes)):
-            set_i = set(final_indexes[i])
-            intersection_indexes = [x for x in intersection_indexes if x in set_i]
+        if n>1:
+            for i in range(1,len(final_indexes)):
+                set_i = set(final_indexes[i])
+                intersection_indexes = [x for x in intersection_indexes if x in set_i]
 
-    for i in intersection_indexes:
-        print([columns_dict[k][i] for k in columns_dict])
-        
+        for i in intersection_indexes:
+            print([columns_dict[k][i] for k in columns_dict])
+    
+    else: print(f'Ошибка. Введите данные')
+    
 elif args.command == 'stats':
-        l = columns_dict.get(args.column_n)
-        stats_c(args.column_n)
+        l = columns_dict[args.column_n]
+        stats_c(l)
         
 elif args.command == 'grouping':
     if args.simple_group:
